@@ -19,6 +19,8 @@
             --shadow: 0 8px 30px rgba(2,6,23,0.5);
             --card-border: rgba(255,255,255,0.04);
             --logo-size: 54px;
+            --sun-color: #f6c22e;
+            --moon-color: #475569;
         }
 
         /* Light theme vars (applied when toggle checked) */
@@ -75,6 +77,10 @@
         .knob .moon{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
         #theme-toggle:checked + .site .toggle .knob .sun{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
         #theme-toggle:checked + .site .toggle .knob .moon{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+        /* Explicit icon colors so they remain visible against knob background */
+        .knob .sun path{fill:var(--sun-color)}
+        .knob .moon path{fill:var(--moon-color)}
 
         /* focus styles */
         .toggle:focus{outline:none}
@@ -155,9 +161,9 @@
                         <!-- moving knob contains both icons; we fade/scale between them so no extra icons sit outside -->
                         <div class="knob" aria-hidden="true">
                             <!-- sun -->
-                            <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-3.17l1.79 1.79 1.79-1.78-1.79-1.79-1.79 1.78zM17 13h3v-2h-3v2zM6.76 19.16l1.8 1.79 1.79-1.78-1.79-1.79-1.8 1.78zM12 6a6 6 0 100 12 6 6 0 000-12z" /></svg>
+                            <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-3.17l1.79 1.79 1.79-1.78-1.79-1.79-1.79 1.78zM17 13h3v-2h-3v2zM6.76 19.16l1.8 1.79 1.79-1.78-1.79-1.79-1.8 1.78zM12 6a6 6 0 100 12 6 6 0 000-12z" /></svg>
                             <!-- moon -->
-                            <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.37 5.51A7 7 0 1018.49 14.6 9 9 0 019.37 5.51z"/></svg>
+                            <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.37 5.51A7 7 0 1018.49 14.6 9 9 0 019.37 5.51z"/></svg>
                         </div>
                     </label>
                 </div>
