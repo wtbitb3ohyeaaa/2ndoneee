@@ -73,10 +73,12 @@
 
         /* Knob icons (one sun + one moon inside the moving knob) */
         .toggle .knob svg{width:18px;height:18px;display:block}
-        .knob .sun,.knob .moon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);transition:opacity 260ms ease, transform 260ms cubic-bezier(.2,.9,.2,1)}
-        .knob .moon{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
-        #theme-toggle:checked + .site .toggle .knob .sun{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
-        #theme-toggle:checked + .site .toggle .knob .moon{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        /* Default state (unchecked): show moon, hide sun */
+        .knob .sun{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.6);opacity:0;transition:opacity 260ms ease, transform 260ms cubic-bezier(.2,.9,.2,1)}
+        .knob .moon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);opacity:1;transition:opacity 260ms ease, transform 260ms cubic-bezier(.2,.9,.2,1)}
+        /* Checked state: show sun, hide moon */
+        #theme-toggle:checked + .site .toggle .knob .sun{opacity:1;transform:translate(-50%,-50%) scale(1)}
+        #theme-toggle:checked + .site .toggle .knob .moon{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
 
         /* Explicit icon colors so they remain visible against knob background */
         .knob .sun path{fill:var(--sun-color)}
@@ -261,7 +263,13 @@
       const toggle = document.getElementById('theme-toggle');
       const label = document.querySelector('label[for="theme-toggle"]');
       const saved = localStorage.getItem('site-theme');
+      // saved === 'light' means checked should be true (light theme)
       if(saved === 'light') toggle.checked = true;
+      else if(saved === 'dark') toggle.checked = false;
+      else {
+        // no saved preference: follow system (light -> checked true)
+        toggle.checked = window.matchMedia('(prefers-color-scheme: light)').matches;
+      }
       toggle.addEventListener('change', (e)=>{ localStorage.setItem('site-theme', e.target.checked ? 'light' : 'dark'); });
       label.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); toggle.checked = !toggle.checked; toggle.dispatchEvent(new Event('change')); } });
     })();
