@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic tasks - literally BASIC!</title>
     <style>
-        /* CSS variables for easy theming */
+        /* Theme variables (dark by default, toggled by checkbox) */
         :root{
             --bg: #0f1724;
             --card: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
@@ -16,10 +16,22 @@
             --glass: rgba(255,255,255,0.02);
             --glass-2: rgba(255,255,255,0.03);
             --radius: 14px;
+            --shadow: 0 8px 30px rgba(2,6,23,0.5);
+            --card-border: rgba(255,255,255,0.04);
+            --logo-size: 54px;
         }
 
-        /* Layout */
+        /* Light theme vars (applied when toggle checked) */
+        #theme-toggle:checked + .site{ --bg: #f8fafc; --card: linear-gradient(135deg, rgba(2,6,23,0.02), rgba(2,6,23,0.01)); --accent1: #ef4444; --accent2: #f59e0b; --muted: rgba(2,6,17,0.55); --card-border: rgba(2,6,23,0.06); --shadow: 0 12px 40px rgba(10,20,30,0.06); }
+
+        /* Respect system preference on first load */
+        @media (prefers-color-scheme: light){
+            :root{ --bg: #f8fafc; --accent1: #ef4444; --accent2: #f59e0b; --muted: rgba(2,6,17,0.55); }
+        }
+
+        /* Base layout */
         html,body{height:100%;}
+        *,*::before,*::after{box-sizing:border-box}
         body{
             margin:0;
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -30,68 +42,41 @@
             -webkit-font-smoothing:antialiased;
             -moz-osx-font-smoothing:grayscale;
             padding:48px 24px;
-            box-sizing:border-box;
         }
 
-        .wrap{
-            max-width:1000px;
-            margin:0 auto;
-        }
+        .wrap{max-width:1100px;margin:0 auto}
 
         /* Header */
-        header{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:20px;
-            margin-bottom:24px;
-        }
-
-        .brand{
-            display:flex;align-items:center;gap:14px;
-        }
+        header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}
+        .brand{display:flex;align-items:center;gap:14px}
 
         .logo{
-            width:54px;height:54px;border-radius:12px;background:conic-gradient(from 120deg,var(--accent1),var(--accent2));
-            box-shadow:0 6px 20px rgba(2,6,23,0.6), inset 0 -6px 18px rgba(255,255,255,0.04);
-            transform:rotate(-8deg);
+            width:var(--logo-size);height:var(--logo-size);border-radius:14px;background:conic-gradient(from 120deg,var(--accent1),var(--accent2));
+            box-shadow:0 8px 30px rgba(2,6,23,0.4), inset 0 -6px 18px rgba(255,255,255,0.03);transform:rotate(-8deg);
+            display:grid;place-items:center;color:white;font-weight:700;font-size:18px;letter-spacing:0.4px
         }
+        .logo::after{content:"";position:absolute;inset:0;border-radius:14px;pointer-events:none;mix-blend-mode:overlay;opacity:0.12;background:linear-gradient(180deg,rgba(255,255,255,0.04),transparent)}
 
-        h1{
-            margin:0;font-size:20px;line-height:1.05;
-            background:linear-gradient(90deg,var(--accent1),var(--accent2));
-            -webkit-background-clip:text;background-clip:text;color:transparent;
-            font-weight:700;
-            letter-spacing:0.2px;
-            animation:floatIn 900ms cubic-bezier(.2,.9,.2,1) both;
-        }
-
-        @keyframes floatIn{
-            from{opacity:0; transform: translateY(-8px) rotate(-2deg) scale(.985)}
-            to{opacity:1; transform: translateY(0) rotate(0) scale(1)}
-        }
-
+        h1{margin:0;font-size:20px;line-height:1.05;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;letter-spacing:0.2px;}
+        h1 small{display:block;font-size:12px;color:var(--muted);font-weight:500}
         h3{margin:0;color:var(--muted);font-weight:500}
 
-        /* Theme toggle (pure CSS) */
+        /* Theme toggle */
         .controls{display:flex;gap:12px;align-items:center}
         #theme-toggle{position:absolute;left:-9999px}
-        .toggle{
-            --w:54px; --h:30px;
-            width:var(--w);height:var(--h);border-radius:999px;background:linear-gradient(90deg,#111 0%, #182031 100%);display:inline-flex;align-items:center;padding:4px;box-sizing:border-box;cursor:pointer;
-            border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 20px rgba(2,6,23,0.5);
-        }
-        .toggle .knob{width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#fff,#dfefff);transform:translateX(0);transition:transform 260ms cubic-bezier(.2,.9,.2,1)}
-        #theme-toggle:checked + .site .toggle .knob{transform:translateX(24px); background:linear-gradient(180deg,#0b1220,#07202a)}
 
-        /* Use checkbox state to change theme vars */
-        #theme-toggle:checked + .site{
-            --bg: #f8fafc;
-            --card: linear-gradient(135deg, rgba(2,6,23,0.02), rgba(2,6,23,0.01));
-            --accent1: #ef4444;
-            --accent2: #f59e0b;
-            color: #061220
-        }
+        .toggle{--w:64px;--h:34px;width:var(--w);height:var(--h);border-radius:999px;background:linear-gradient(90deg,rgba(0,0,0,0.25),rgba(255,255,255,0.02));display:inline-flex;align-items:center;padding:4px;box-sizing:border-box;cursor:pointer;border:1px solid var(--card-border);box-shadow:var(--shadow);position:relative}
+        .toggle .knob{width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,#fff,#dfefff);transform:translateX(0);transition:transform 260ms cubic-bezier(.2,.9,.2,1), background 260ms ease;box-shadow:0 6px 18px rgba(2,6,23,0.18)}
+        #theme-toggle:checked + .site .toggle .knob{transform:translateX(30px); background:linear-gradient(180deg,#0b1220,#07202a);box-shadow:0 10px 24px rgba(2,6,23,0.12)}
+
+        /* Icons inside toggle */
+        .toggle .icon{position:absolute;top:50%;transform:translateY(-50%);width:16px;height:16px;opacity:0.9}
+        .toggle .icon.sun{left:8px;fill:yellow}
+        .toggle .icon.moon{right:8px;fill:#cbd5e1}
+
+        /* focus styles */
+        .toggle:focus{outline:none}
+        .toggle:focus-visible{box-shadow:0 0 0 4px rgba(124,58,237,0.15)}
 
         /* Content area */
         main{display:grid;grid-template-columns:1fr;gap:18px}
@@ -100,43 +85,39 @@
             background:var(--card);
             border-radius:var(--radius);
             padding:18px;
-            box-shadow: 0 8px 30px rgba(2,6,23,0.5);
-            overflow:hidden;backdrop-filter: blur(6px);
-            border:1px solid rgba(255,255,255,0.03);
-            transition:transform 260ms ease, box-shadow 260ms ease;
-            transform-origin:center;
+            box-shadow: var(--shadow);
+            overflow:hidden;backdrop-filter: blur(8px) saturate(120%);
+            border:1px solid var(--card-border);
+            transition:transform 360ms cubic-bezier(.2,.9,.2,1), box-shadow 360ms ease;
+            position:relative;transform-origin:center;
         }
 
-        .card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 18px 60px rgba(2,6,23,0.55)}
+        /* decorative gradient border */
+        .card::before{content:"";position:absolute;inset:-1px;border-radius:calc(var(--radius) + 1px);padding:1px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;pointer-events:none;opacity:0.08}
 
+        .card:hover{transform:translateY(-8px) scale(1.015);box-shadow:0 22px 70px rgba(2,6,23,0.6)}
         .card h2{margin:0 0 12px 0;font-size:18px}
 
-        .video-wrap{position:relative;border-radius:12px;overflow:hidden}
-        .video-wrap iframe{width:100%;height:240px;border:0;display:block;transform-origin:center;transition:transform 420ms cubic-bezier(.2,.9,.2,1), filter 260ms}
-        .video-wrap::after{
-            content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent, rgba(0,0,0,0.18));pointer-events:none;mix-blend-mode:multiply}
+        .video-wrap{position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12));}
+        .video-wrap iframe{width:100%;height:260px;border:0;display:block;transform-origin:center;transition:transform 420ms cubic-bezier(.2,.9,.2,1), filter 260ms}
+        .video-wrap::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent, rgba(0,0,0,0.18));pointer-events:none;mix-blend-mode:multiply}
 
         .card:hover .video-wrap iframe{transform:scale(1.03)}
 
         /* Play pulse */
-        .play{
-            position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;display:grid;place-items:center;pointer-events:none;
-        }
-        .play::before{content:"";width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(124,58,237,0.28), rgba(6,182,212,0.12));filter:blur(10px);opacity:0.9;animation:breath 1600ms infinite}
-        .play svg{width:28px;height:28px;position:relative;z-index:2;filter:drop-shadow(0 6px 12px rgba(2,6,23,0.6))}
-        @keyframes breath{0%{transform:scale(.88);opacity:.88}50%{transform:scale(1.08);opacity:1}100%{transform:scale(.88);opacity:.88}}
+        .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;display:grid;place-items:center;pointer-events:none}
+        .play::before{content:"";width:120%;height:120%;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(124,58,237,0.28), rgba(6,182,212,0.12));filter:blur(12px);opacity:0.9;animation:breath 2200ms infinite}
+        .play svg{width:30px;height:30px;position:relative;z-index:2;filter:drop-shadow(0 8px 22px rgba(2,6,23,0.6))}
+        @keyframes breath{0%{transform:scale(.9);opacity:.85}50%{transform:scale(1.06);opacity:1}100%{transform:scale(.9);opacity:.85}}
 
-        /* footer small */
+        /* footer */
         footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
 
         /* Responsive tweaks */
-        @media (min-width:760px){
-            main{grid-template-columns:1fr 1fr}
-            .video-wrap iframe{height:200px}
-        }
+        @media (min-width:760px){main{grid-template-columns:1fr 1fr}.video-wrap iframe{height:200px}}
 
         /* Stagger appear animation for cards */
-        .card{opacity:0; transform:translateY(8px); animation:cardIn 720ms cubic-bezier(.2,.9,.2,1) both}
+        .card{opacity:0; transform:translateY(10px); animation:cardIn 720ms cubic-bezier(.2,.9,.2,1) both}
         .card:nth-child(1){animation-delay:120ms}
         .card:nth-child(2){animation-delay:220ms}
         .card:nth-child(3){animation-delay:320ms}
@@ -146,9 +127,10 @@
         @keyframes cardIn{to{opacity:1; transform:translateY(0)}}
 
         /* Accessibility: prefer reduced motion */
-        @media (prefers-reduced-motion:reduce){
-            *{animation:none!important;transition:none!important}
-        }
+        @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+        /* Small screens spacing */
+        @media (max-width:520px){body{padding:28px 16px}.logo{width:44px;height:44px}}
     </style>
 </head>
 
@@ -161,14 +143,18 @@
                 <div class="brand">
                     <div class="logo" aria-hidden="true"></div>
                     <div>
-                        <h1>hi Tutorial for some basic tasks...</h1>
+                        <h1>hi Tutorial for some basic tasks... <small>polished UI</small></h1>
                         <h3>...that people struggle to do today?</h3>
                     </div>
                 </div>
 
                 <div class="controls">
-                    <label for="theme-toggle" class="toggle" title="Toggle theme">
-                        <div class="knob"></div>
+                    <label for="theme-toggle" class="toggle" title="Toggle theme" tabindex="0">
+                        <!-- sun icon -->
+                        <svg class="icon sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-3.17l1.79 1.79 1.79-1.78-1.79-1.79-1.79 1.78zM17 13h3v-2h-3v2zM6.76 19.16l1.8 1.79 1.79-1.78-1.79-1.79-1.8 1.78zM12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
+                        <!-- moon icon -->
+                        <svg class="icon moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.37 5.51A7 7 0 1018.49 14.6 9 9 0 019.37 5.51z"/></svg>
+                        <div class="knob" aria-hidden="true"></div>
                     </label>
                 </div>
             </header>
@@ -177,7 +163,7 @@
                 <section class="card">
                     <h2>How to flip an egg</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/x2mQmKHgjUI?si=AQo8b7Shs5jgQnLl"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/x2mQmKHgjUI?si=AQo8b7Shs5jgQnLl"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -190,7 +176,7 @@
                 <section class="card">
                     <h2>How to block ads without purchasing any subscription</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/G8Elpk7tCME?si=PmeGH05C4oDYd8ZK"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/G8Elpk7tCME?si=PmeGH05C4oDYd8ZK"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -203,7 +189,7 @@
                 <section class="card">
                     <h2>How to pick up an umbrella</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/AqEzI9rPvP4?si=R2G7z8BnU6W6RQ00"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/AqEzI9rPvP4?si=R2G7z8BnU6W6RQ00"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -216,7 +202,7 @@
                 <section class="card">
                     <h2>How to kick a ball</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/W-DNTIroa44?si=4il5OX-Nv_gSSoSx"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/W-DNTIroa44?si=4il5OX-Nv_gSSoSx"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -229,7 +215,7 @@
                 <section class="card">
                     <h2>How to rotate a book</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/h2AxyflvnPE?si=h1Ff2KxWlIjcaM8E"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/h2AxyflvnPE?si=h1Ff2KxWlIjcaM8E"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -242,7 +228,7 @@
                 <section class="card">
                     <h2>How to catch a pokemon</h2>
                     <div class="video-wrap">
-                        <iframe height="200" src="https://www.youtube.com/embed/NyGv8XtKJc4?si=8gXUqFkrmalLVHXP"
+                        <iframe loading="lazy" height="200" src="https://www.youtube.com/embed/NyGv8XtKJc4?si=8gXUqFkrmalLVHXP"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -258,6 +244,18 @@
             </footer>
         </div>
     </div>
+
+    <script>
+    // small script: restore theme and make label keyboard-accessible
+    (function(){
+      const toggle = document.getElementById('theme-toggle');
+      const label = document.querySelector('label[for="theme-toggle"]');
+      const saved = localStorage.getItem('site-theme');
+      if(saved === 'light') toggle.checked = true;
+      toggle.addEventListener('change', (e)=>{ localStorage.setItem('site-theme', e.target.checked ? 'light' : 'dark'); });
+      label.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); toggle.checked = !toggle.checked; toggle.dispatchEvent(new Event('change')); } });
+    })();
+    </script>
 </body>
 
 </html>
