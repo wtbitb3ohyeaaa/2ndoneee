@@ -5,54 +5,259 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic tasks - literally BASIC!</title>
+    <style>
+        /* CSS variables for easy theming */
+        :root{
+            --bg: #0f1724;
+            --card: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+            --accent1: #7c3aed;
+            --accent2: #06b6d4;
+            --muted: rgba(255,255,255,0.65);
+            --glass: rgba(255,255,255,0.02);
+            --glass-2: rgba(255,255,255,0.03);
+            --radius: 14px;
+        }
+
+        /* Layout */
+        html,body{height:100%;}
+        body{
+            margin:0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,0.08), transparent),
+                        radial-gradient(800px 500px at 90% 90%, rgba(6,182,212,0.06), transparent),
+                        var(--bg);
+            color: #e6eef8;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            padding:48px 24px;
+            box-sizing:border-box;
+        }
+
+        .wrap{
+            max-width:1000px;
+            margin:0 auto;
+        }
+
+        /* Header */
+        header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:20px;
+            margin-bottom:24px;
+        }
+
+        .brand{
+            display:flex;align-items:center;gap:14px;
+        }
+
+        .logo{
+            width:54px;height:54px;border-radius:12px;background:conic-gradient(from 120deg,var(--accent1),var(--accent2));
+            box-shadow:0 6px 20px rgba(2,6,23,0.6), inset 0 -6px 18px rgba(255,255,255,0.04);
+            transform:rotate(-8deg);
+        }
+
+        h1{
+            margin:0;font-size:20px;line-height:1.05;
+            background:linear-gradient(90deg,var(--accent1),var(--accent2));
+            -webkit-background-clip:text;background-clip:text;color:transparent;
+            font-weight:700;
+            letter-spacing:0.2px;
+            animation:floatIn 900ms cubic-bezier(.2,.9,.2,1) both;
+        }
+
+        @keyframes floatIn{
+            from{opacity:0; transform: translateY(-8px) rotate(-2deg) scale(.985)}
+            to{opacity:1; transform: translateY(0) rotate(0) scale(1)}
+        }
+
+        h3{margin:0;color:var(--muted);font-weight:500}
+
+        /* Theme toggle (pure CSS) */
+        .controls{display:flex;gap:12px;align-items:center}
+        #theme-toggle{position:absolute;left:-9999px}
+        .toggle{
+            --w:54px; --h:30px;
+            width:var(--w);height:var(--h);border-radius:999px;background:linear-gradient(90deg,#111 0%, #182031 100%);display:inline-flex;align-items:center;padding:4px;box-sizing:border-box;cursor:pointer;
+            border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 20px rgba(2,6,23,0.5);
+        }
+        .toggle .knob{width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#fff,#dfefff);transform:translateX(0);transition:transform 260ms cubic-bezier(.2,.9,.2,1)}
+        #theme-toggle:checked + .site .toggle .knob{transform:translateX(24px); background:linear-gradient(180deg,#0b1220,#07202a)}
+
+        /* Use checkbox state to change theme vars */
+        #theme-toggle:checked + .site{
+            --bg: #f8fafc;
+            --card: linear-gradient(135deg, rgba(2,6,23,0.02), rgba(2,6,23,0.01));
+            --accent1: #ef4444;
+            --accent2: #f59e0b;
+            color: #061220
+        }
+
+        /* Content area */
+        main{display:grid;grid-template-columns:1fr;gap:18px}
+
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            padding:18px;
+            box-shadow: 0 8px 30px rgba(2,6,23,0.5);
+            overflow:hidden;backdrop-filter: blur(6px);
+            border:1px solid rgba(255,255,255,0.03);
+            transition:transform 260ms ease, box-shadow 260ms ease;
+            transform-origin:center;
+        }
+
+        .card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 18px 60px rgba(2,6,23,0.55)}
+
+        .card h2{margin:0 0 12px 0;font-size:18px}
+
+        .video-wrap{position:relative;border-radius:12px;overflow:hidden}
+        .video-wrap iframe{width:100%;height:240px;border:0;display:block;transform-origin:center;transition:transform 420ms cubic-bezier(.2,.9,.2,1), filter 260ms}
+        .video-wrap::after{
+            content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent, rgba(0,0,0,0.18));pointer-events:none;mix-blend-mode:multiply}
+
+        .card:hover .video-wrap iframe{transform:scale(1.03)}
+
+        /* Play pulse */
+        .play{
+            position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;display:grid;place-items:center;pointer-events:none;
+        }
+        .play::before{content:"";width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(124,58,237,0.28), rgba(6,182,212,0.12));filter:blur(10px);opacity:0.9;animation:breath 1600ms infinite}
+        .play svg{width:28px;height:28px;position:relative;z-index:2;filter:drop-shadow(0 6px 12px rgba(2,6,23,0.6))}
+        @keyframes breath{0%{transform:scale(.88);opacity:.88}50%{transform:scale(1.08);opacity:1}100%{transform:scale(.88);opacity:.88}}
+
+        /* footer small */
+        footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+
+        /* Responsive tweaks */
+        @media (min-width:760px){
+            main{grid-template-columns:1fr 1fr}
+            .video-wrap iframe{height:200px}
+        }
+
+        /* Stagger appear animation for cards */
+        .card{opacity:0; transform:translateY(8px); animation:cardIn 720ms cubic-bezier(.2,.9,.2,1) both}
+        .card:nth-child(1){animation-delay:120ms}
+        .card:nth-child(2){animation-delay:220ms}
+        .card:nth-child(3){animation-delay:320ms}
+        .card:nth-child(4){animation-delay:420ms}
+        .card:nth-child(5){animation-delay:520ms}
+        .card:nth-child(6){animation-delay:620ms}
+        @keyframes cardIn{to{opacity:1; transform:translateY(0)}}
+
+        /* Accessibility: prefer reduced motion */
+        @media (prefers-reduced-motion:reduce){
+            *{animation:none!important;transition:none!important}
+        }
+    </style>
 </head>
 
 <body>
-    <h1>hi Tutorial for some basic tasks...</h1>
-    <h3>...that people struggle to do today?</h3>
-    <hr>
-    <h2>How to flip an egg</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/x2mQmKHgjUI?si=AQo8b7Shs5jgQnLl"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h2>How to block ads without purchasing any subscription</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/G8Elpk7tCME?si=PmeGH05C4oDYd8ZK"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h2>How to pick up an umbrella</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/AqEzI9rPvP4?si=R2G7z8BnU6W6RQ00"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h2>How to kick a ball</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/W-DNTIroa44?si=4il5OX-Nv_gSSoSx"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h2>How to rotate a book</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/h2AxyflvnPE?si=h1Ff2KxWlIjcaM8E"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h2>How to catch a pokemon</h2>
-    <iframe height="200" src="https://www.youtube.com/embed/NyGv8XtKJc4?si=8gXUqFkrmalLVHXP"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <hr>
-    <h6>Don't tell me you found anything helpful tho...</h6>
-    <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/x2mQmKHgjUI" 
-        frameborder="0" 
-        allowfullscreen>
-</iframe>
+    <!-- Theme toggle is purely CSS: check/uncheck to change variables -->
+    <input type="checkbox" id="theme-toggle">
+    <div class="site">
+        <div class="wrap">
+            <header>
+                <div class="brand">
+                    <div class="logo" aria-hidden="true"></div>
+                    <div>
+                        <h1>hi Tutorial for some basic tasks...</h1>
+                        <h3>...that people struggle to do today?</h3>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <label for="theme-toggle" class="toggle" title="Toggle theme">
+                        <div class="knob"></div>
+                    </label>
+                </div>
+            </header>
+
+            <main>
+                <section class="card">
+                    <h2>How to flip an egg</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/x2mQmKHgjUI?si=AQo8b7Shs5jgQnLl"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>How to block ads without purchasing any subscription</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/G8Elpk7tCME?si=PmeGH05C4oDYd8ZK"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>How to pick up an umbrella</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/AqEzI9rPvP4?si=R2G7z8BnU6W6RQ00"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>How to kick a ball</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/W-DNTIroa44?si=4il5OX-Nv_gSSoSx"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>How to rotate a book</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/h2AxyflvnPE?si=h1Ff2KxWlIjcaM8E"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>How to catch a pokemon</h2>
+                    <div class="video-wrap">
+                        <iframe height="200" src="https://www.youtube.com/embed/NyGv8XtKJc4?si=8gXUqFkrmalLVHXP"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div class="play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7-11-7z" fill="white"/></svg>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <p>Tip: click the theme toggle at the top-right to see another color palette. Hover cards to see subtle motion.</p>
+            </footer>
+        </div>
+    </div>
 </body>
 
 </html>
