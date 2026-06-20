@@ -66,13 +66,15 @@
         #theme-toggle{position:absolute;left:-9999px}
 
         .toggle{--w:64px;--h:34px;width:var(--w);height:var(--h);border-radius:999px;background:linear-gradient(90deg,rgba(0,0,0,0.25),rgba(255,255,255,0.02));display:inline-flex;align-items:center;padding:4px;box-sizing:border-box;cursor:pointer;border:1px solid var(--card-border);box-shadow:var(--shadow);position:relative}
-        .toggle .knob{width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,#fff,#dfefff);transform:translateX(0);transition:transform 260ms cubic-bezier(.2,.9,.2,1), background 260ms ease;box-shadow:0 6px 18px rgba(2,6,23,0.18)}
+        .toggle .knob{width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,#fff,#dfefff);transform:translateX(0);transition:transform 260ms cubic-bezier(.2,.9,.2,1), background 260ms ease, box-shadow 260ms ease;box-shadow:0 6px 18px rgba(2,6,23,0.18);display:grid;place-items:center;overflow:visible;position:relative}
         #theme-toggle:checked + .site .toggle .knob{transform:translateX(30px); background:linear-gradient(180deg,#0b1220,#07202a);box-shadow:0 10px 24px rgba(2,6,23,0.12)}
 
-        /* Icons inside toggle */
-        .toggle .icon{position:absolute;top:50%;transform:translateY(-50%);width:16px;height:16px;opacity:0.9}
-        .toggle .icon.sun{left:8px;fill:yellow}
-        .toggle .icon.moon{right:8px;fill:#cbd5e1}
+        /* Knob icons (one sun + one moon inside the moving knob) */
+        .toggle .knob svg{width:18px;height:18px;display:block}
+        .knob .sun,.knob .moon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);transition:opacity 260ms ease, transform 260ms cubic-bezier(.2,.9,.2,1)}
+        .knob .moon{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
+        #theme-toggle:checked + .site .toggle .knob .sun{opacity:0;transform:translate(-50%,-50%) scale(0.6)}
+        #theme-toggle:checked + .site .toggle .knob .moon{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
         /* focus styles */
         .toggle:focus{outline:none}
@@ -150,11 +152,13 @@
 
                 <div class="controls">
                     <label for="theme-toggle" class="toggle" title="Toggle theme" tabindex="0">
-                        <!-- sun icon -->
-                        <svg class="icon sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-3.17l1.79 1.79 1.79-1.78-1.79-1.79-1.79 1.78zM17 13h3v-2h-3v2zM6.76 19.16l1.8 1.79 1.79-1.78-1.79-1.79-1.8 1.78zM12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
-                        <!-- moon icon -->
-                        <svg class="icon moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.37 5.51A7 7 0 1018.49 14.6 9 9 0 019.37 5.51z"/></svg>
-                        <div class="knob" aria-hidden="true"></div>
+                        <!-- moving knob contains both icons; we fade/scale between them so no extra icons sit outside -->
+                        <div class="knob" aria-hidden="true">
+                            <!-- sun -->
+                            <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.76 4.84l-1.8-1.79L3.17 4.83l1.79 1.79 1.8-1.78zM1 13h3v-2H1v2zm10 8h2v-3h-2v3zm7.03-3.17l1.79 1.79 1.79-1.78-1.79-1.79-1.79 1.78zM17 13h3v-2h-3v2zM6.76 19.16l1.8 1.79 1.79-1.78-1.79-1.79-1.8 1.78zM12 6a6 6 0 100 12 6 6 0 000-12z" /></svg>
+                            <!-- moon -->
+                            <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.37 5.51A7 7 0 1018.49 14.6 9 9 0 019.37 5.51z"/></svg>
+                        </div>
                     </label>
                 </div>
             </header>
